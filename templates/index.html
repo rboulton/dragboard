@@ -1,26 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Dragboard{% endblock %}
 {% block content %}
-<form action="/" method="GET">
+<form action="/url" method="GET">
 <label for="urlinput">Url:</label><input id="urlinput" type="text" name="url" value="{{url}}"/>
 <input type="submit" name="submit" value="Analyse"/>
-{% if url %}
-<a href="{{url}}" target="_blank">Open</a>
-{% endif %}
-</form>
-{% if categories %}
-Categories: {{ categories|join(', ') }}
 <hr>
-{% endif %}
-{% for entity in entities %}
-{% if entity.name and entity.ref %}
-
-<a href="/ref?ref={{entity.ref}}&name={{entity.name}}">{{ entity.name }}</a>
-{% if entity.facet %}
-{{ entity.facet }}
-{% endif %}
-<br/>
-
-{% endif %}
-{% endfor %}
 {% endblock %}

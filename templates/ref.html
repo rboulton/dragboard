@@ -9,9 +9,10 @@
 <b>Author</b>: {{ item.author }}
 {% endif %}
 {% if item.url %}
-<a href="/?url={{item.url|urlencode}}">Analyse</a>
-<a href="{{item.url}}" target="_blank">Open</a>
+<a href="/url?url={{item.url|urlencode}}">Analyse</a>
+<a href="{{item.url|urlencode}}" target="_blank">Open</a>
 {% endif %}
 <hr>
 {% endfor %}
+<a href="/entity?ref={{ref|urlencode}}">This data in JSON format<a/><br>
 {% endblock %}

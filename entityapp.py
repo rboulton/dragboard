@@ -16,6 +16,11 @@ except ImportError:
 class MainPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
+        self.response.out.write(render("index.html", {}))
+
+class UrlPage(webapp.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/html'
         url = self.request.get('url', '')
         context = {}
         if url is not None:
@@ -25,7 +30,7 @@ class MainPage(webapp.RequestHandler):
                                 categories=entities.get('categories'),
                                ))
         context['url'] = url
-        self.response.out.write(render("index.html", context))
+        self.response.out.write(render("url.html", context))
 
 class RefPage(webapp.RequestHandler):
     def get(self):
@@ -39,7 +44,6 @@ class EntitiesPage(webapp.RequestHandler):
     def get(self):
         url=self.request.get('url')
         entities = getentities.get_entities(url)
-        entities['url'] = url
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(entities))
 
@@ -47,12 +51,12 @@ class EntityPage(webapp.RequestHandler):
     def get(self):
         url=self.request.get('ref')
         refs = getentities.get_entity_references(url)
-        refs['url'] = url
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(refs))
 
 application = webapp.WSGIApplication(
                                      [('/', MainPage),
+                                      ('/url', UrlPage),
                                       ('/ref', RefPage),
                                       ('/entities', EntitiesPage),
                                       ('/entity', EntityPage)],
