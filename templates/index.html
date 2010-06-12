@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Dragboard{% endblock %}
 {% block content %}
+Enter the URL of an article, blogpost, product website, etc.
+<p>
 <form action="/url" method="GET">
 <label for="urlinput">Url:</label><input id="urlinput" type="text" name="url" value="{{url}}"/>
 <input type="submit" name="submit" value="Analyse"/>
