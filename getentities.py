@@ -10,42 +10,44 @@ except ImportError:
         import json
 
 
+def getname(item):
+    try:
+        return item['canonicalName']['$']
+    except KeyError: pass
+    try:
+        return item['name']['$']
+    except KeyError: pass
+    return ''
+
+def gethref(item):
+    try:
+        return item['@href']
+    except KeyError: pass
+    return ''
+
+def mklist(items):
+    if isinstance(items, dict):
+        return [items]
+    return items
 
 def get_entities_(url):
     data = urllib2.urlopen('http://api.evri.com/v1/media/entities.json?uri=' + urllib.quote(url)).read()
     data = json.loads(data)
     graph = data['evriThing']['graph']
-    def getname(item):
-        try:
-            return item['canonicalName']['$']
-        except KeyError: pass
-        try:
-            return item['name']['$']
-        except KeyError: pass
-        return ''
     def getfacet(item):
         try:
             return item['facets']['facet']['$']
         except KeyError: pass
         return ''
-    def gethref(item):
-        try:
-            return item['@href']
-        except KeyError: pass
-        return ''
 
     try:
-        category_list=graph['categories']['category']
-        if isinstance(category_list, dict):
-            category_list = [category_list]
+        category_list=mklist(graph['categories']['category'])
         categories=[item['$'] for item in category_list]
     except KeyError:
         categories=[]
 
     try:
-        entity_list = graph['entities']['entity']
-        if isinstance(entity_list, dict):
-            entity_list = [entity_list]
+        entity_list = mklist(graph['entities']['entity'])
     except KeyError:
         entity_list = []
 
@@ -66,7 +68,7 @@ def get_entities(url):
         return dict(category='', entities=[])
 
 def get_entity_references_(url):
-    data = urllib2.urlopen('http://api.evri.com/v1/media/related.json?entityURI=' + urllib.quote(url)).read()
+    data = urllib2.urlopen('http://api.evri.com/v1/media/related.json?includeTopEntities=true&entityURI=' + urllib.quote(url)).read()
     data = json.loads(data)
     data = data['evriThing']['mediaResult']['articleList']['article']
     def get_path(article):
@@ -75,10 +77,22 @@ def get_entity_references_(url):
             return 'http://%s%s' % (link['@hostName'], link['@path'])
         except KeyError:
             return ''
+
+    def getentities(article):
+        try:
+            entities = mklist(article['topEntities']['entity'])
+        except KeyError: return []
+        return [dict(
+                     name=getname(entity),
+                     ref=gethref(entity),
+                    ) for entity in entities]
+        
     return [dict(
                  author=article.get('author', {}).get('$', ''),
                  content=article.get('content', {}).get('$', ''),
+                 title=article.get('title', {}).get('$', ''),
                  url=get_path(article),
+                 entities=getentities(article),
             ) for article in data]
 
 def get_entity_references(url):

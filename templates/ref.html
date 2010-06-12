@@ -3,14 +3,24 @@
 {% block content %}
 <h1>{{ name }}</h1>
 {% for item in refs %}
-{{ item.content }}<br>
-
+<b>{{ item.title }}</b>
 {% if item.author %}
-<b>Author</b>: {{ item.author }}
+<small>(<b>Source</b>: {{ item.author }})</small>
 {% endif %}
 {% if item.url %}
 <a href="/url?url={{item.url|urlencode}}">Analyse</a>
-<a href="{{item.url|urlencode}}" target="_blank">Open</a>
+<a href="{{item.url}}" target="_blank">Open</a>
+{% endif %}
+<br>
+{{ item.content }}
+
+{% if item.entities %}
+<br>
+<small>
+{% for entity in item.entities %}
+<a href="/ref?ref={{ entity.ref|urlencode }}&name={{ entity.name|urlencode }}">{{ entity.name }}</a>
+{% endfor %}
+</small>
 {% endif %}
 <hr>
 {% endfor %}

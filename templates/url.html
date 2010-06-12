@@ -5,7 +5,7 @@
 <label for="urlinput">Url:</label><input id="urlinput" type="text" name="url" value="{{url}}"/>
 <input type="submit" name="submit" value="Analyse"/>
 {% if url %}
-<a href="{{url|urlencode}}" target="_blank">Open</a>
+<a href="{{url}}" target="_blank">Open</a>
 {% endif %}
 </form>
 {% if categories %}
