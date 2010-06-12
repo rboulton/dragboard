@@ -9,6 +9,12 @@ except ImportError:
     except ImportError:
         import json
 
+try:
+    from cached_lookup import geturl
+except ImportError:
+    raise
+    def geturl(url):
+        return urllib2.urlopen(url).read()
 
 def getname(item):
     try:
@@ -31,7 +37,7 @@ def mklist(items):
     return items
 
 def get_entities_(url):
-    data = urllib2.urlopen('http://api.evri.com/v1/media/entities.json?uri=' + urllib.quote(url)).read()
+    data = geturl('http://api.evri.com/v1/media/entities.json?uri=' + urllib.quote(url))
     data = json.loads(data)
     graph = data['evriThing']['graph']
     def getfacet(item):
@@ -68,7 +74,7 @@ def get_entities(url):
         return dict(category='', entities=[])
 
 def get_entity_references_(url):
-    data = urllib2.urlopen('http://api.evri.com/v1/media/related.json?includeTopEntities=true&entityURI=' + urllib.quote(url)).read()
+    data = geturl('http://api.evri.com/v1/media/related.json?includeTopEntities=true&entityURI=' + urllib.quote(url))
     data = json.loads(data)
     data = data['evriThing']['mediaResult']['articleList']['article']
     def get_path(article):
