@@ -1,30 +1,34 @@
 {% extends "base.html" %}
 {% block title %}Dragboard{% endblock %}
 {% block content %}
-<form action="/url" method="GET">
-<label for="urlinput">Url:</label><input id="urlinput" type="text" name="url" value="{{url}}"/>
+<form action="/topic" method="GET">
+<label for="topicinput">News topic:</label><input id="topicinput" type="text" name="search" value="{{search}}"/>
 <input type="submit" name="submit" value="Analyse"/>
-{% if url %}
-<a href="{{url}}" target="_blank">Open</a>
-{% endif %}
 </form>
-{% if categories %}
-Categories: {{ categories|join(', ') }}
-<hr>
-{% endif %}
-{% for entity in entities %}
-{% if entity.name and entity.ref %}
+<br>
+{% for item in results %}
 
-<a href="/ref?ref={{entity.ref|urlencode}}&name={{entity.name|urlencode}}">{{ entity.name }}</a>
-{% if entity.facet %}
-{{ entity.facet }}
+<b>{{ item.title }}</b>
+{% if item.author %}
+<small>(<b>Source</b>: {{ item.author }})</small>
 {% endif %}
-<br/>
+{% if item.url %}
+<a href="/url?url={{item.url|urlencode}}">Analyse</a>
+<a href="{{item.url}}" target="_blank">Open</a>
+{% endif %}
+{% if item.content %}
+<br>
+{{ item.content }}
+{% endif %}
 
-{% endif %}
+{% if item.entities %}
+<br>
+<small>
+{% for entity in item.entities[:10] %}
+<a href="/ref?ref={{ entity.ref|urlencode }}&name={{ entity.name|urlencode }}">{{ entity.name }}</a>
 {% endfor %}
-<hr>
-{% if url %}
-<a href="/entities?url={{url|urlencode}}">This data in JSON format<a/><br>
+</small>
 {% endif %}
+<hr>
+{% endfor %}
 {% endblock %}

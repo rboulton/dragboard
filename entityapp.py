@@ -38,13 +38,22 @@ class TopicPage(webapp.RequestHandler):
         except KeyError:
             results = []
         context = dict(search=search)
-        if len(results) > 0:
-            url = results[0]['webUrl']
-            entities = getentities.get_entities(url)
-            context.update(dict(url=url.encode('utf8'),
-                                entities=entities.get('entities'),
-                                categories=entities.get('categories'),
+        fullresults = []
+        count = 0
+        for result in results:
+            url = result['webUrl']
+            if count < 1:
+                entities = getentities.get_entities(url)
+            else:
+                entities = {}
+            fullresults.append(dict(url=url.encode('utf8'),
+                                    entities=entities.get('entities'),
+                                    categories=entities.get('categories'),
+                                    title=result['webTitle'],
+                                    author='Guardian',
                                ))
+            count += 1
+        context['results'] = fullresults
         self.response.out.write(render("topic.html", context))
 
 class UrlPage(webapp.RequestHandler):

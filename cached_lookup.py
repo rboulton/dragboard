@@ -1,4 +1,5 @@
 from google.appengine.ext import db
+from google.appengine.api.urlfetch import DownloadError
 import datetime
 import urllib2
 
@@ -16,7 +17,10 @@ def geturl(url):
         else:
             return c.body.encode('utf8')
 
-    body = urllib2.urlopen(url).read()
+    try:
+        body = urllib2.urlopen(url).read()
+    except DownloadError:
+        raise
     l = CachedLookup(url=url.decode('utf8'), body=body.decode('utf8'))
     l.put()
     return body
