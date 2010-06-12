@@ -12,7 +12,6 @@ except ImportError:
 try:
     from cached_lookup import geturl
 except ImportError:
-    raise
     def geturl(url):
         return urllib2.urlopen(url).read()
 

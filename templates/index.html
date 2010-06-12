@@ -1,10 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Dragboard{% endblock %}
 {% block content %}
-Enter the URL of an article, blogpost, product website, etc.
-<p>
-<form action="/url" method="GET">
-<label for="urlinput">Url:</label><input id="urlinput" type="text" name="url" value="{{url}}"/>
+<form action="/topic" method="GET">
+<label for="urlinput">News topic:</label>
+<input id="urlinput" type="text" name="search" value="{{search}}"/>
 <input type="submit" name="submit" value="Analyse"/>
+</form>
+
+<div style="margin-top: 1em; margin-bottom: 1em;">OR</div>
+
+<form action="/url" method="GET">
+<label for="urlinput">Enter the URL of an article, blogpost, product website, etc:</label>
+<input id="urlinput" type="text" name="url" value="{{url}}"/>
+<input type="submit" name="submit" value="Analyse"/>
+</form>
 <hr>
 {% endblock %}

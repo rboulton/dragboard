@@ -4,6 +4,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 import os
 from render import render
+import urllib
 
 try:
     from simplejson import json
@@ -13,15 +14,45 @@ except ImportError:
     except ImportError:
         import json
 
+try:
+    from cached_lookup import geturl
+except ImportError:
+    def geturl(url):
+        return urllib2.urlopen(url).read()
+
 class MainPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
         self.response.out.write(render("index.html", {}))
 
+class TopicPage(webapp.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/html'
+        search = self.request.get('search', '')
+        gurl = ('http://content.guardianapis.com/search?q=%s&format=json' %
+                urllib.quote(search))
+        results = geturl(gurl)
+        results = json.loads(results)
+        try:
+            results = results['response']['results']
+        except KeyError:
+            results = []
+        context = dict(search=search)
+        if len(results) > 0:
+            url = results[0]['webUrl']
+            entities = getentities.get_entities(url)
+            context.update(dict(url=url.encode('utf8'),
+                                entities=entities.get('entities'),
+                                categories=entities.get('categories'),
+                               ))
+        self.response.out.write(render("topic.html", context))
+
 class UrlPage(webapp.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
         url = self.request.get('url', '')
+        if not url.startswith('http'):
+            url = 'http://' + url
         context = {}
         if url is not None:
             entities = getentities.get_entities(url)
@@ -29,7 +60,6 @@ class UrlPage(webapp.RequestHandler):
                                 entities=entities.get('entities'),
                                 categories=entities.get('categories'),
                                ))
-        context['url'] = url
         self.response.out.write(render("url.html", context))
 
 class RefPage(webapp.RequestHandler):
@@ -56,6 +86,7 @@ class EntityPage(webapp.RequestHandler):
 
 application = webapp.WSGIApplication(
                                      [('/', MainPage),
+                                      ('/topic', TopicPage),
                                       ('/url', UrlPage),
                                       ('/ref', RefPage),
                                       ('/entities', EntitiesPage),
