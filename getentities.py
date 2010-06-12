@@ -91,4 +91,4 @@ if __name__ == '__main__':
     import sys
     import pprint
     pprint.pprint(get_entities(sys.argv[1]))
-    pprint.pprint(get_entity_references(sys.argv[1]))
+    #pprint.pprint(get_entity_references(sys.argv[1]))

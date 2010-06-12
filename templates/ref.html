@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Dragboard - {{ name }}{% endblock %}
+{% block content %}
+<h1>{{ name }}</h1>
+{% for item in refs %}
+{{ item.content }}<br>
+
+{% if item.author %}
+<b>Author</b>: {{ item.author }}
+{% endif %}
+{% if item.url %}
+<a href="/?url={{item.url|urlencode}}">Analyse</a>
+<a href="{{item.url}}" target="_blank">Open</a>
+{% endif %}
+<hr>
+{% endfor %}
+{% endblock %}
