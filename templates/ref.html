@@ -10,6 +10,7 @@
 {% if item.url %}
 <a href="/url?url={{item.url|urlencode}}">Analyse</a>
 <a href="{{item.url}}" target="_blank">Open</a>
+{% include "addresbutton.html" %}
 {% endif %}
 <br>
 {{ item.content }}
@@ -25,4 +26,5 @@
 <hr>
 {% endfor %}
 <a href="/entity?ref={{ref|urlencode}}">This data in JSON format<a/><br>
+<small>This page uses data returned from the Evri API: <a href="http://www.evri.com/developer">http://www.evri.com/developer</a></small>
 {% endblock %}

@@ -15,6 +15,7 @@
 {% if item.url %}
 <a href="/url?url={{item.url|urlencode}}">Analyse</a>
 <a href="{{item.url}}" target="_blank">Open</a>
+{% include "addresbutton.html" %}
 {% endif %}
 {% if item.content %}
 <br>
@@ -31,4 +32,5 @@
 {% endif %}
 <hr>
 {% endfor %}
+<small>This page uses data returned from the <a href="">Guardian Open Platform</a>, and the Evri API: <a href="http://www.evri.com/developer">http://www.evri.com/developer</a></small>
 {% endblock %}

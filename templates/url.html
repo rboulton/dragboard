@@ -27,4 +27,5 @@ Categories: {{ categories|join(', ') }}
 {% if url %}
 <a href="/entities?url={{url|urlencode}}">This data in JSON format<a/><br>
 {% endif %}
+<small>This page uses data returned from the Evri API: <a href="http://www.evri.com/developer">http://www.evri.com/developer</a></small>
 {% endblock %}

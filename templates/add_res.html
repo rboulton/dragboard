@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Dragboard - add a resource{% endblock %}
+{% block content %}
+<b>Warning: Everything is public!</b><br>
+<form action="/add_res" method="POST">
+<label for="board_input">Board:</label> <input id="board_input" type="text" name="board" value=""/><br>
+<label for="url_input">URL:</label> <input id="url_input" type="text" name="url" value=""/><br>
+<label for="title_input">Title:</label> <input id="title_input" type="text" name="title" value=""/><br>
+<label for="source_input">Source:</label> <input id="source_input" type="text" name="source" value=""/><br>
+<textarea name="content">
+</textarea>
+<input type="submit" name="submit" value="Add"/>
+</form>
+{% endblock %}

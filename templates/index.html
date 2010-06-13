@@ -1,10 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Dragboard{% endblock %}
 {% block content %}
+{% if updates %}
+Recent board updates:
+<ul>
+{% for update in updates %}
+<li><a href="/board?board={{ update.board|urlencode }}">{{ update.board }}</a> ({{ update.mtime|timeagoformat }})</li>
+{% endfor %}
+</ul>
+<hr>
+Find some new content to put on a board:<br>
+<b>Warning: Everything is public!</b><br>
+<br>
+{% endif %}
 <form action="/topic" method="GET">
 <label for="topicinput">News topic:</label>
 <input id="topicinput" type="text" name="search" value="{{search}}"/>
-<input type="submit" name="submit" value="Analyse"/>
+<input type="submit" name="submit" value="Search"/>
 </form>
 
 <div style="margin-top: 1em; margin-bottom: 1em;">OR</div>
@@ -14,5 +26,9 @@
 <input id="urlinput" type="text" name="url" value="{{url}}"/>
 <input type="submit" name="submit" value="Analyse"/>
 </form>
+
+<div style="margin-top: 1em; margin-bottom: 1em;">OR</div>
+
+<a href="/add_res">Add a resource directly</a>
 <hr>
 {% endblock %}

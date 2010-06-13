@@ -1,0 +1,10 @@
+{% if user %}
+<form action="/add_res" method="POST">
+<input type="hidden" name="board" value="">
+<input type="hidden" name="url" value="{{item.url}}">
+<input type="hidden" name="title" value="{{item.title}}">
+<input type="hidden" name="source" value="{{item.author}}">
+<input type="hidden" name="content" value="{{item.content}}">
+<input type="submit" value="Add to board">
+</form>
+{% endif %}

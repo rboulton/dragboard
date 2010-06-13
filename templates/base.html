@@ -7,12 +7,14 @@
  <link rel=StyleSheet href="/static/style.css" type="text/css"> 
  <script type="text/javascript"
   src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+ <script type="text/javascript" src="/static/jquery-ui-1.8.min.js"></script>
+ {% block extrahead %}{% endblock %}
 </head>
 <body>
+{% if loginurl %}
+<a href="{{ loginurl }}">Login to make a board</a>
+{% endif %}
 {% block content %}
 {% endblock %}
-<small>
-This application uses data returned from the Evri API: <a href="http://www.evri.com/developer">http://www.evri.com/developer</a>
-</small>
 </body>
 </html>
