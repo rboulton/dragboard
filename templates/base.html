@@ -14,6 +14,9 @@
 {% if loginurl %}
 <a href="{{ loginurl }}">Login to make a board</a><br>
 {% endif %}
+{% if logouturl %}
+<a href="{{ logouturl }}">Logout</a><br>
+{% endif %}
 {% block content %}
 {% endblock %}
 </body>

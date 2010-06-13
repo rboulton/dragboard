@@ -42,6 +42,8 @@ def render(request, template_name, context={}):
     newcontext = dict(user=user)
     if not user:
         newcontext['loginurl'] = users.create_login_url(request.uri)
+    else:
+        newcontext['logouturl'] = users.create_logout_url(request.uri)
 
     newcontext['thisurl'] = wsgiref.util.request_uri(request.environ)
 

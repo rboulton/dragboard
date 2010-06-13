@@ -25,6 +25,7 @@ except ImportError:
 
 
 class BoardItem(db.Model):
+    imgurl = db.StringProperty()
     owner = db.UserProperty()
     board = db.StringProperty()
     url = db.StringProperty()
@@ -57,6 +58,7 @@ def get_board_updates():
     return db.Query(BoardMtimes).order('-mtime').fetch(30)
 
 def get_board(board):
+    return db.Query(BoardItem).filter('board =', board).fetch(30)
     user = users.get_current_user()
     return db.Query(BoardItem).filter('owner =', user).filter('board =', board).fetch(30)
 
@@ -71,7 +73,7 @@ def del_board_item(user, board, url):
             item.delete()
 
 def add_board_item(user, board, url, title, source, content,
-                   x=None, y=None, wid=None, hgt=None):
+                   x=None, y=None, wid=None, hgt=None, imgurl=None):
     if wid is None:
         wid = 400
     if hgt is None:
@@ -89,7 +91,8 @@ def add_board_item(user, board, url, title, source, content,
                      title=title,
                      source=source,
                      content=content,
-                     x=x, y=y, wid=wid, hgt=hgt)
+                     x=x, y=y, wid=wid, hgt=hgt,
+                     imgurl=imgurl)
     item.put()
     set_board_mtime(board)
 
@@ -125,16 +128,17 @@ def currentboard(user, request):
     boardname = request.get('board', '')
     if boardname != '':
         return boardname
-    return user.nickname()
+    if user:
+        return user.nickname()
+    return 'default'
 
 class BoardPage(JinjaRequestHandler):
     def get(self):
         user = users.get_current_user()
         context = dict(user=user)
-        if user:
-            boardname = currentboard(user, self.request)
-            context['board'] = get_board(boardname)
-            context['boardname'] = boardname
+        boardname = currentboard(user, self.request)
+        context['board'] = get_board(boardname)
+        context['boardname'] = boardname
 
         self.render("display.html", context)
 
@@ -240,10 +244,11 @@ class AddResourcePage(JinjaRequestHandler):
         source = self.request.get('source')
         content = self.request.get('content')
         board = self.request.get('board')
+        imgurl = self.request.get('imgurl')
         if not board:
             board = currentboard(user, self.request)
 
-        add_board_item(user, board, url, title, source, content)
+        add_board_item(user, board, url, title, source, content, imgurl=imgurl)
 
         fmt = self.request.get('fmt')
         if fmt == 'json':
