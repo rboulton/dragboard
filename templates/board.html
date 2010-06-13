@@ -1,4 +1,3 @@
-{% if user %}
 <div style="width: 1000px; height: 600px; border: solid black; position: relative;" id="board">
 {% for item in board %}
   <div class="dragitem" style="width: {{ item.wid}}px; height: {{ item.hgt }}px; position: absolute; overflow: hidden; top: {{item.y}}px; left: {{ item.x}}px;" id="{{item.url}}">
@@ -14,4 +13,3 @@
   </div>
 {% endfor %}
 </div>
-{% endif %}
