@@ -106,6 +106,7 @@ def move_board_item(user, board, url, x, y, wid=None, hgt=None):
     if hgt is not None and hgt != '':
         item.hgt = int(hgt)
     item.put()
+    set_board_mtime(board)
 
 class JinjaRequestHandler(webapp.RequestHandler):
     def render(self, tmplname, context, mimetype='text/html'):
@@ -117,17 +118,23 @@ class MainPage(JinjaRequestHandler):
         user = users.get_current_user()
         context = dict(user=user)
         context['updates'] = get_board_updates()
-        if user:
-            context['board'] = get_board(self.request.get('board', 'default'))
 
         self.render("index.html", context)
+
+def currentboard(user, request):
+    boardname = request.get('board', '')
+    if boardname != '':
+        return boardname
+    return user.nickname()
 
 class BoardPage(JinjaRequestHandler):
     def get(self):
         user = users.get_current_user()
         context = dict(user=user)
         if user:
-            context['board'] = get_board(self.request.get('board', 'default'))
+            boardname = currentboard(user, self.request)
+            context['board'] = get_board(boardname)
+            context['boardname'] = boardname
 
         self.render("display.html", context)
 
@@ -234,7 +241,7 @@ class AddResourcePage(JinjaRequestHandler):
         content = self.request.get('content')
         board = self.request.get('board')
         if not board:
-            board = 'default'
+            board = currentboard(user, self.request)
 
         add_board_item(user, board, url, title, source, content)
 

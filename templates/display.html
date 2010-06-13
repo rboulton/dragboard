@@ -6,14 +6,13 @@ $(function() {
      data = {
      	x: ui.position.left,
 	y: ui.position.top,
-	board: 'default',
+	board: "{{ boardname }}",
 	url: e.target.id
      }
      if (ui.size) {
         data.wid = ui.size.width;
 	data.hgt = ui.size.height;
      }
-     console.log(data);
      jQuery.post('/set_pos', data);
   }
 
