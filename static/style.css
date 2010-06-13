@@ -1,5 +1,9 @@
+@import url(/static/ui_smoothness/jquery-ui-1.8.custom.css);
+
 .dragitem {
     border: solid black;
+    background: white;
+    padding: 0.5em;
 }
 form {
     display: inline;

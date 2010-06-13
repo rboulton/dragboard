@@ -1,4 +1,31 @@
 {% extends "base.html" %}
+{% block extrahead %}
+<script type="text/javascript">
+$(function() {
+  var moved = function(e, ui) {
+     data = {
+     	x: ui.position.left,
+	y: ui.position.top,
+	board: 'default',
+	url: e.target.id
+     }
+     if (ui.size) {
+        data.wid = ui.size.width;
+	data.hgt = ui.size.height;
+     }
+     console.log(data);
+     jQuery.post('/set_pos', data);
+  }
+
+  $(".dragitem").draggable({ containment: 'parent', stop: moved, });
+  $(".dragitem").resizable({
+			   containment: 'parent',
+			   handles: 'n, e, s, se, w',
+			   stop: moved,
+			   });
+});
+</script>
+{% endblock %}
 {% block title %}Dragboard{% endblock %}
 {% block content %}
 {% include "board.html" %}

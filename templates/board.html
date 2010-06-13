@@ -1,7 +1,7 @@
 {% if user %}
-<div style="width: 700px; height: 400px; border: solid black;" id="board">
+<div style="width: 1000px; height: 600px; border: solid black; position: relative;" id="board">
 {% for item in board %}
-  <div class="dragitem">
+  <div class="dragitem" style="width: {{ item.wid}}px; height: {{ item.hgt }}px; position: absolute; overflow: hidden; top: {{item.y}}px; left: {{ item.x}}px;" id="{{item.url}}">
     <a href="{{ item.url }}">{{ item.title }}</a>
     {% if item.source %}<small>(<b>Source</b> {{ item.source }})</small>{% endif %}
     <form action="/del_res" method="POST"><input type="submit" name="delete" value="delete">

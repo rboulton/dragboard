@@ -66,8 +66,9 @@ def del_board_item(user, board, url):
         item.delete()
     items = db.Query(BoardItem).filter('board =', board).fetch(10)
     if len(items) == 0:
-        item = BoardMtimes(board=board)
-        item.delete()
+        items = db.Query(BoardMtimes).filter('board =', board).fetch(10)
+        for item in items:
+            item.delete()
 
 def add_board_item(user, board, url, title, source, content,
                    x=None, y=None, wid=None, hgt=None):
@@ -88,20 +89,22 @@ def add_board_item(user, board, url, title, source, content,
                      title=title,
                      source=source,
                      content=content,
-                     x=x, y=y)
+                     x=x, y=y, wid=wid, hgt=hgt)
     item.put()
     set_board_mtime(board)
 
-def move_board_item(user, board, url, x, y, wid, hgt):
-    items = db.Query(BoardItem).filter('owner =', user).filter('board =', board).filter('url =', url)
+def move_board_item(user, board, url, x, y, wid=None, hgt=None):
+    items = db.Query(BoardItem).filter('owner =', user).filter('board =', board).filter('url =', url).fetch(10)
     if len(items) == 0: return
     for item in items[1:]:
         item.delete()
     item = items[0]
-    item.x = x
-    item.y = y
-    item.wid = wid
-    item.hgt = hgt
+    item.x = int(x)
+    item.y = int(y)
+    if wid is not None and wid != '':
+        item.wid = int(wid)
+    if hgt is not None and hgt != '':
+        item.hgt = int(hgt)
     item.put()
 
 class JinjaRequestHandler(webapp.RequestHandler):
@@ -242,6 +245,20 @@ class AddResourcePage(JinjaRequestHandler):
         else:
             self.redirect('/')
 
+class SetPosPage(JinjaRequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            return
+
+        move_board_item(user,
+                        self.request.get('board'),
+                        self.request.get('url'),
+                        self.request.get('x'),
+                        self.request.get('y'),
+                        self.request.get('wid'),
+                        self.request.get('hgt'))
+ 
 application = webapp.WSGIApplication(
                                      [('/', MainPage),
                                       ('/board', BoardPage),
@@ -252,6 +269,7 @@ application = webapp.WSGIApplication(
                                       ('/entity', EntityPage),
                                       ('/add_res', AddResourcePage),
                                       ('/del_res', DelResourcePage),
+                                      ('/set_pos', SetPosPage),
                                       ],
                                      debug=True)
 
